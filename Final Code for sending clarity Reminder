@@ -26,13 +26,13 @@ Sub SendReminderEmail()
                 ' Set email properties
                 With OutMail
                     .To = cell.Value ' Email address in column L
-                    .Subject = "Reminder: Clarity Hours"
-                    .Body = "Hi " & cell.Offset(0, -7).Value & "," & vbCrLf & vbCrLf & _
-        "Please update your clarity hours for the current month, and kindly try to update them on a weekly basis." & vbCrLf & vbCrLf & _
-        "You can access the clarity hours tracking at:" & vbCrLf & _
-        "https://geminisolutionsindpvtltd.sharepoint.com/:x:/s/DC-EJ-DevSecOps/ESa3m7j_tlVBiDKrjyHhey4BAg29PYJWqp3APQiyzcRVjw?e=3OPgBJ" & vbCrLf & _
-        "Thanks and Regards" & vbCrLf & _
-        "Kabir Sharma" & vbCrLf & _
+                    .Subject = "Auto-Reminder: Clarity Hours"
+                    .Body = "Hi " & ws.Cells(cell.Row, "E").Value & "," & vbCrLf & vbCrLf & _
+                            "Please update your clarity hours for the current month, and kindly try to update them on a weekly basis." & vbCrLf & vbCrLf & _
+                            "You can access the clarity hours tracking sheet at:" & vbCrLf & _
+                            "https://geminisolutionsindpvtltd.sharepoint.com/:x:/s/DC-EJ-DevSecOps/ESa3m7j_tlVBiDKrjyHhey4BAg29PYJWqp3APQiyzcRVjw?e=uAT2pT" & vbCrLf & vbCrLf & _
+                            "Thanks and Regards," & vbCrLf & "Kabir Sharma" & vbCrLf & "BA L-2" & vbCrLf & vbCrLf & _
+                            "Note: This is an auto-generated email."
                     .Send ' Send the email
                 End With
                 
@@ -48,4 +48,3 @@ Sub SendReminderEmail()
     ' Release the Outlook application object
     Set OutApp = Nothing
 End Sub
-
