@@ -1,0 +1,51 @@
+Sub SendReminderEmail()
+    Dim OutApp As Object
+    Dim OutMail As Object
+    Dim ws As Worksheet
+    Dim rng As Range
+    Dim cell As Range
+    
+    ' Set the worksheet
+    Set ws = ThisWorkbook.Sheets("March'24") ' Replace "March'24" with your sheet name
+    
+    ' Set the range to check (excluding header row)
+    Set rng = ws.Range("L2:L" & ws.Cells(ws.Rows.Count, "L").End(xlUp).Row)
+    
+    ' Create Outlook application object
+    Set OutApp = CreateObject("Outlook.Application")
+    
+    ' Loop through each cell in the range
+    For Each cell In rng
+        ' Check if column T in the current row is empty
+        If IsEmpty(ws.Cells(cell.Row, "T").Value) Then ' Assuming T is the 20th column (offset by 19 from L)
+            ' Check if the email address exists
+            If cell.Value <> "" Then
+                ' Create a new email
+                Set OutMail = OutApp.CreateItem(0)
+                
+                ' Set email properties
+                With OutMail
+                    .To = cell.Value ' Email address in column L
+                    .Subject = "Reminder: Clarity Hours"
+                    .Body = "Hi " & cell.Offset(0, -7).Value & "," & vbCrLf & vbCrLf & _
+        "Please update your clarity hours for the current month, and kindly try to update them on a weekly basis." & vbCrLf & vbCrLf & _
+        "You can access the clarity hours tracking at:" & vbCrLf & _
+        "https://geminisolutionsindpvtltd.sharepoint.com/:x:/s/DC-EJ-DevSecOps/ESa3m7j_tlVBiDKrjyHhey4BAg29PYJWqp3APQiyzcRVjw?e=3OPgBJ" & vbCrLf & _
+        "Thanks and Regards" & vbCrLf & _
+        "Kabir Sharma" & vbCrLf & _
+                    .Send ' Send the email
+                End With
+                
+                ' Release the email object
+                Set OutMail = Nothing
+                
+                ' Add a delay of 5 seconds
+                Application.Wait Now + TimeValue("00:00:05")
+            End If
+        End If
+    Next cell
+    
+    ' Release the Outlook application object
+    Set OutApp = Nothing
+End Sub
+
