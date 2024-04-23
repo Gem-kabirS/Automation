@@ -1,0 +1,79 @@
+Sub CopyTableToEmail()
+
+    Dim OutlookApp As Object
+    Dim OutlookMail As Object
+    Dim ws As Worksheet, wsEmail As Worksheet
+    Dim tbl As ListObject
+    Dim tableName As String
+    Dim EmailBody As String
+    Dim LastRow As Long, i As Long
+    Dim Recipients As String
+
+    ' Set worksheets
+    Set ws = ThisWorkbook.Sheets("Sheet1") 'Change Sheet1 to your data sheet name
+    Set wsEmail = ThisWorkbook.Sheets("Sheet2") 'Change Sheet2 to your email list sheet name
+
+    ' Construct table name
+    tableName = "Table_" & Format(Date, "YYYY_MM_DD")
+
+    ' Check if table exists
+    On Error Resume Next
+    Set tbl = ws.ListObjects(tableName)
+    On Error GoTo 0
+
+    If tbl Is Nothing Then
+        MsgBox "Table not found!", vbExclamation
+        Exit Sub
+    End If
+
+    ' Copy table data
+    tbl.DataBodyRange.Copy
+
+    ' Get the last row with data in Sheet2 Column A
+    LastRow = wsEmail.Cells(wsEmail.Rows.Count, "A").End(xlUp).Row
+
+    ' Concatenate all recipients
+    For i = 1 To LastRow
+        If i = LastRow Then
+            Recipients = Recipients & wsEmail.Cells(i, 1).Value
+        Else
+            Recipients = Recipients & wsEmail.Cells(i, 1).Value & ";"
+        End If
+    Next i
+
+    ' Create a new mail item
+    Set OutlookApp = CreateObject("Outlook.Application")
+    Set OutlookMail = OutlookApp.CreateItem(0)
+
+    ' Set email body
+    EmailBody = "Hi team," & vbCrLf & _
+                "Hope you are doing well. Please find the attached MOM discussed today." & vbCrLf & _
+                "In case of any doubts or discrepancies, please feel free to reach out." & vbCrLf & _
+                "Best Regards," & vbCrLf & _
+                "Note: This is an automated email."
+
+    ' Set email properties
+    With OutlookMail
+        .To = Recipients
+        .Subject = "Auto Email : MOM " & Format(Date, "DD_MM_YYYY")
+        .Body = EmailBody
+        .Display
+    End With
+
+    ' Wait for 2 seconds
+    Application.Wait (Now + TimeValue("0:00:02"))
+
+    ' Paste table into email body
+    SendKeys "^v"
+
+    ' Wait for 2 seconds
+    Application.Wait (Now + TimeValue("0:00:02"))
+
+    ' Send the email
+    OutlookMail.Send
+
+    ' Clean up
+    Set OutlookMail = Nothing
+    Set OutlookApp = Nothing
+
+End Sub
