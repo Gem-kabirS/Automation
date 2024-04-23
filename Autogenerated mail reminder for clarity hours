@@ -6,7 +6,7 @@ Sub SendReminderEmail()
     Dim cell As Range
     
     ' Set the worksheet
-    Set ws = ThisWorkbook.Sheets("March'24") ' Replace "March'24" with your sheet name
+    Set ws = ThisWorkbook.Sheets("April'24") ' Replace "April'24" with your sheet name
     
     ' Set the range to check (excluding header row)
     Set rng = ws.Range("L2:L" & ws.Cells(ws.Rows.Count, "L").End(xlUp).Row)
